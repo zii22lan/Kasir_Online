@@ -9,12 +9,14 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Header Toko -->
         <header class="app-header">
             <img src="assets/logo.png" alt="Logo Kadet & Co." class="app-logo-img">
             <h1>KADET & CO.</h1>
             <p class="tagline">Premium Quality — Est. 2026</p>
         </header>
 
+        <!-- Bagian Menu Utama -->
         <section class="section-card">
             <h2 class="section-title">Menu Utama</h2>
             <div class="menu-grid">
@@ -29,6 +31,7 @@
             </div>
         </section>
 
+        <!-- Bagian Keranjang Belanja -->
         <section class="section-card">
             <h2 class="section-title">Keranjang Pesanan</h2>
             <ul id="cart-list" class="cart-list">
@@ -38,10 +41,11 @@
                 <span>Total Bayar:</span>
                 <span class="total-amount">Rp <span id="total-price">0</span></span>
             </div>
-            <button class="btn-checkout" onclick="checkoutProcess()">Proses & Bayar via QRIS</button>
+            <button class="btn-checkout" onclick="checkoutProcess()">Proses & Cetak Nota</button>
         </section>
     </div>
 
+    <!-- Modal Nota Digital (Pop-up) -->
     <div id="receiptModal" class="modal-overlay">
         <div class="modal-box">
             <div class="receipt-header">
@@ -52,20 +56,23 @@
             </div>
             
             <div id="receipt-items" class="receipt-body">
-                </div>
+                <!-- Data Pesanan Terisi Otomatis -->
+            </div>
             
             <div class="dashed-line"></div>
             
-            <div class="receipt-qris">
-                <p class="merchant-name">Toko Cell Place</p>
-                <p class="merchant-id">NMID : ID1023245862397</p>
-                <div class="qris-box">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020101021126670019ID102324586239701189360052008031123455204000053033605802ID5915Toko Cell Place6009Kab. Bogor61051691062070703A016304A3C5" alt="QRIS Code" class="qris-img">
-                </div>
-                <p class="qris-footer">Lumer di Mulut, Nagih di Hati!</p>
+            <!-- GANTI: Bagian QRIS dihapus, diganti Pesan Penutup yang Bagus -->
+            <div class="receipt-footer-messages" style="text-align: center; font-family: 'Montserrat', sans-serif;">
+                <p style="font-weight: bold; margin: 5px 0; font-size: 14px;">Terima Kasih Atas Kunjungan Anda</p>
+                <p style="font-style: italic; margin: 4px 0; color: #5d4037; font-size: 13px;">"Lumer di Mulut, Nagih di Hati!"</p>
+                <p style="margin: 10px 0 5px 0; font-size: 11px; color: #757575;">Rasakan kehangatan roti premium setiap hari.</p>
+                <p style="font-weight: 600; margin: 0; font-size: 12px; letter-spacing: 0.5px;">Powered by Toko Cell Place</p>
             </div>
             
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <div class="dashed-line"></div>
+            
+            <!-- Kontrol Aksi Cetak & Selesai -->
+            <div style="display: flex; gap: 10px; margin-top: 20px;" class="no-print-area">
                 <button class="btn-action btn-print" onclick="window.print()">Cetak Nota</button>
                 <button class="btn-action btn-done" onclick="resetApp()">Selesai</button>
             </div>
