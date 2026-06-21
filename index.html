@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kadet & Co. - Kasir Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <img src="assets/logo.png" alt="Logo Kadet & Co." class="app-logo-img">
+            <h1>KADET & CO.</h1>
+            <p class="tagline">Premium Quality — Est. 2026</p>
+        </header>
+
+        <section class="section-card">
+            <h2 class="section-title">Menu Utama</h2>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="addToCart('Roti Kadet Biasa', 7000)">
+                    <span class="item-name">🍞 Roti Kadet Biasa</span>
+                    <span class="item-price">Rp7.000 <small>/ Box</small></span>
+                </div>
+                <div class="menu-item" onclick="addToCart('Roti Kadet Pandan', 10000)">
+                    <span class="item-name">🟢 Roti Kadet Pandan</span>
+                    <span class="item-price">Rp10.000 <small>/ Box</small></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2 class="section-title">Keranjang Pesanan</h2>
+            <ul id="cart-list" class="cart-list">
+                <li class="empty-state">Belum ada item terpilih</li>
+            </ul>
+            <div class="total-bar">
+                <span>Total Bayar:</span>
+                <span class="total-amount">Rp <span id="total-price">0</span></span>
+            </div>
+            <button class="btn-checkout" onclick="checkoutProcess()">Proses & Bayar via QRIS</button>
+        </section>
+    </div>
+
+    <div id="receiptModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="receipt-header">
+                <img src="assets/logo.png" alt="Logo" class="receipt-logo-img">
+                <h3>KADET & CO.</h3>
+                <p>Premium Quality Bread</p>
+                <div class="dashed-line"></div>
+            </div>
+            
+            <div id="receipt-items" class="receipt-body">
+                </div>
+            
+            <div class="dashed-line"></div>
+            
+            <div class="receipt-qris">
+                <p class="merchant-name">Toko Cell Place</p>
+                <p class="merchant-id">NMID : ID1023245862397</p>
+                <div class="qris-box">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020101021126670019ID102324586239701189360052008031123455204000053033605802ID5915Toko Cell Place6009Kab. Bogor61051691062070703A016304A3C5" alt="QRIS Code" class="qris-img">
+                </div>
+                <p class="qris-footer">Lumer di Mulut, Nagih di Hati!</p>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-action btn-print" onclick="window.print()">Cetak Nota</button>
+                <button class="btn-action btn-done" onclick="resetApp()">Selesai</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
