@@ -6,11 +6,39 @@
     <title>Kasir Pro - Roti Kadet v2.0</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        /* Gaya khusus animasi & cetak */
+        /* PERBAIKAN TOTAL UNTUK MEDIA PRINT ANDROID THERMAL */
         @media print {
-            body * { visibility: hidden; }
-            #struk-print, #struk-print * { visibility: visible; }
-            #struk-print { position: absolute; left: 0; top: 0; width: 100%; }
+            /* Sembunyikan semua elemen aplikasi kasir */
+            body * { 
+                display: none !important; 
+            }
+            /* Tampilkan hanya area struk dengan layout standar printer */
+            #struk-print, #struk-print * { 
+                display: block !important; 
+                visibility: visible !important;
+                color: #000000 !important;
+                font-family: 'Courier New', Courier, monospace !important;
+            }
+            #struk-print { 
+                position: absolute !important; 
+                left: 0 !important; 
+                top: 0 !important; 
+                width: 100% !important; 
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            /* Paksa gambar logo muncul */
+            #struk-print img {
+                display: block !important;
+                max-width: 80px !important;
+                margin: 0 auto 6px auto !important;
+            }
+            /* Penyesuaian layout tabel struk agar tidak berantakan/hilang */
+            .row-item {
+                display: flex !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+            }
         }
         .animate-pop {
             animation: popCheck 0.2s ease-out;
@@ -154,30 +182,36 @@
         </div>
     </div>
 
-    <div id="struk-print" class="hidden bg-white p-4 w-72 mx-auto text-xs font-mono text-black">
-        <div class="text-center mb-3">
-            <img src="assets/logo.jpg.png" alt="Logo" class="w-16 h-16 object-contain mx-auto mb-1.5 print:block">
-            <h3 class="font-bold text-sm uppercase tracking-wide text-black">Roti Kadet Premium</h3>
-            <p class="text-[10px] text-black">Manis & Lembut Di Setiap Gigitan</p>
-            <p class="border-b border-dashed border-black my-2"></p>
+    <div id="struk-print" style="display:none; width: 100%; max-width: 280px; font-family: monospace; color: #000; font-size: 11px;">
+        <div style="text-align: center; margin-bottom: 10px;">
+            <img src="assets/logo.jpg.png" alt="Logo" style="width: 60px; height: 60px; object-contain; margin: 0 auto 4px auto; display: block;">
+            <strong style="font-size: 13px; text-transform: uppercase;">Roti Kadet Premium</strong><br>
+            <span style="font-size: 9px;">Manis & Lembut Di Setiap Gigitan</span><br>
+            --------------------------------
         </div>
-        <div class="space-y-0.5 text-[11px] mb-2 text-black">
-            <div class="flex justify-between"><span>No. Nota :</span><span id="struk-id" class="font-bold"></span></div>
-            <div class="flex justify-between"><span>Tanggal  :</span><span id="struk-date"></span></div>
-            <div class="flex justify-between"><span>Metode   :</span><span id="struk-method" class="font-bold"></span></div>
-            <p class="border-b border-dashed border-black my-2"></p>
-        </div>
-        <div id="struk-items" class="space-y-1 text-[11px] text-black"></div>
-        <p class="border-b border-dashed border-black my-2"></p>
-        <div class="space-y-0.5 text-[11px] text-right text-black">
-            <div class="flex justify-between"><span>TOTAL :</span><span id="struk-total" class="font-bold"></span></div>
-            <div class="flex justify-between"><span>BAYAR :</span><span id="struk-cash"></span></div>
-            <div class="flex justify-between font-bold"><span>KEMBALIAN :</span><span id="struk-change"></span></div>
-        </div>
-        <p class="border-b border-dashed border-black my-2"></p>
-        <div class="text-center text-[10px] mt-3 text-black">
-            <p class="font-bold">Terima Kasih Atas Kunjungan Anda!</p>
-            <p>Sistem Kasir Cloud Roti Kadet</p>
+        
+        <table style="width: 100%; font-size: 11px; border-collapse: collapse; color: #000;">
+            <tr><td>No. Nota</td><td>:</td><td id="struk-id" style="font-weight: bold;">-</td></tr>
+            <tr><td>Tanggal</td><td>:</td><td id="struk-date">-</td></tr>
+            <tr><td>Metode</td><td>:</td><td id="struk-method" style="font-weight: bold;">-</td></tr>
+        </table>
+        
+        <div style="margin: 5px 0;">--------------------------------</div>
+        
+        <div id="struk-items" style="width: 100%; color: #000;"></div>
+        
+        <div style="margin: 5px 0;">--------------------------------</div>
+        
+        <table style="width: 100%; font-size: 11px; text-align: right; color: #000;">
+            <tr><td style="text-align: left;">TOTAL</td><td>:</td><td id="struk-total" style="font-weight: bold;">Rp 0</td></tr>
+            <tr><td style="text-align: left;">BAYAR</td><td>:</td><td id="struk-cash">Rp 0</td></tr>
+            <tr><td style="text-align: left; font-weight: bold;">KEMBALIAN</td><td>:</td><td id="struk-change" style="font-weight: bold;">Rp 0</td></tr>
+        </table>
+        
+        <div style="margin: 5px 0;">--------------------------------</div>
+        <div style="text-align: center; font-size: 10px; margin-top: 5px;">
+            <strong>Terima Kasih Atas Kunjungan Anda!</strong><br>
+            <span>Sistem Kasir Cloud Roti Kadet</span>
         </div>
     </div>
 
@@ -398,11 +432,15 @@
                     sub = item.harga * item.qty;
                 }
 
+                // Menggunakan layout tabel tradisional murni (pasti didukung semua jenis engine cetak Android)
                 itemsHtml += `
-                    <div class="flex justify-between text-black font-medium">
-                        <span>${item.nama} (x${item.qty})</span>
-                        <span>Rp ${sub.toLocaleString('id-ID')}</span>
-                    </div>
+                    <table style="width: 100%; font-size: 11px; color:#000; margin-bottom: 2px;">
+                        <tr>
+                            <td style="width: 65%; text-align: left; vertical-align: top;">${item.nama}</td>
+                            <td style="width: 10%; text-align: center; vertical-align: top;">x${item.qty}</td>
+                            <td style="width: 25%; text-align: right; vertical-align: top;">${sub.toLocaleString('id-ID')}</td>
+                        </tr>
+                    </table>
                 `;
                 ringkasanItem.push(`${item.nama} [x${item.qty}]`);
             });
