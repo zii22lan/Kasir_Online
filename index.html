@@ -32,7 +32,6 @@
 <body class="bg-slate-50 font-sans text-slate-800 min-h-screen overflow-y-auto">
 
     <div class="flex flex-col lg:flex-row min-h-screen w-full">
-        <!-- SISI KIRI: DAFTAR PRODUK -->
         <div class="w-full lg:w-2/3 p-4 lg:p-6 flex flex-col border-b lg:border-b-0 lg:border-r border-slate-200 bg-slate-50">
             <header class="mb-4 flex justify-between items-center bg-white p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-xs border border-slate-200/80">
                 <div>
@@ -62,7 +61,6 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 lg:gap-4 pb-4 hidden" id="product-grid"></div>
         </div>
 
-        <!-- SISI KANAN: KERANJANG -->
         <div class="w-full lg:w-1/3 bg-white flex flex-col shadow-2xl lg:h-screen lg:sticky lg:top-0">
             <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/80 shrink-0">
                 <h2 class="font-bold text-slate-700 flex items-center gap-2 text-xs uppercase tracking-wider">
@@ -110,7 +108,6 @@
         </div>
     </div>
 
-    <!-- MODAL ANTREAN QR -->
     <div id="modal-antrean" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
         <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[80vh]">
             <div class="p-4 border-b flex justify-between items-center bg-slate-50 rounded-t-2xl">
@@ -125,7 +122,6 @@
         </div>
     </div>
 
-    <!-- MODAL PENGATURAN MENU -->
     <div id="modal-menu" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
         <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh]">
             <div class="p-4 border-b flex justify-between items-center bg-slate-50 rounded-t-2xl">
@@ -136,7 +132,6 @@
         </div>
     </div>
 
-    <!-- STRUK AREA PRINT -->
     <div id="struk-print" style="display:none; width: 100%; max-width: 280px; font-family: monospace; color: #000; font-size: 11px;">
         <div style="text-align: center; margin-bottom: 10px;">
             <img src="assets/logo.jpg.png" alt="Logo" style="width: 60px; height: 60px; object-contain; margin: 0 auto 4px auto; display: block;">
@@ -268,15 +263,16 @@
             }
 
             container.innerHTML = '';
-            let total = 0;
-
-            // 1. HITUNG TOTAL KUOTA TOPPING GRATIS BERDASARKAN TOTAL ROTI
+            
+            // REVISI LOGIKA: Hitung total kuota gratis di awal secara mandiri
             let kuotaToppingGratis = 0;
             keranjang.forEach(item => {
                 if (item.kategori === 'original' || item.kategori === 'pandan') { kuotaToppingGratis += item.qty; }
             });
 
-            // 2. HITUNG SUB TOTAL REAL DAN SINKRON PROMO KASIR
+            let total = 0;
+
+            // Render list item keranjang belanja kasir
             keranjang.forEach(item => {
                 let sub = 0;
                 let infoTopping = '';
@@ -322,7 +318,6 @@
                     </div>`;
             });
 
-            // MENAMPILKAN SUB TOTAL ASLI KASIR (TOTAL KESELURUHAN SEBELUM DISKON/POTONGAN)
             let subtotalMurni = 0;
             keranjang.forEach(i => subtotalMurni += (i.harga * i.qty));
             document.getElementById('subtotal').innerText = `Rp ${subtotalMurni.toLocaleString('id-ID')}`;
@@ -392,7 +387,10 @@
             let itemsHtml = '';
             let ringkasanItem = [];
 
-            let kuotaToppingStruk = keranjang.filter(i => i.kategori === 'original' || i.kategori === 'pandan').reduce((sum, i) => sum + i.qty, 0);
+            let kuotaToppingStruk = 0;
+            keranjang.forEach(item => {
+                if (item.kategori === 'original' || item.kategori === 'pandan') { kuotaToppingStruk += item.qty; }
+            });
 
             keranjang.forEach(item => {
                 let sub = 0;
@@ -437,4 +435,3 @@
     </script>
 </body>
 </html>
-
