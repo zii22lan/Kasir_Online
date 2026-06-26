@@ -144,7 +144,6 @@
             updateKeranjang();
         }
 
-        function Shirley() {}
         function kosongkanKeranjang() { keranjang = []; updateKeranjang(); }
 
         function updateKeranjang() {
@@ -160,7 +159,7 @@
             container.innerHTML = '';
             let total = 0;
 
-            // 1. HITUNG TOTAL KUOTA TOPPING GRATIS PEMBELI (Berdasarkan jumlah roti)
+            // 1. HITUNG TOTAL KUOTA TOPPING GRATIS PEMBELI
             let kuotaToppingGratis = 0;
             keranjang.forEach(item => {
                 if (item.kategori === 'original' || item.kategori === 'pandan') { kuotaToppingGratis += item.qty; }
@@ -169,6 +168,7 @@
             // 2. HITUNG SINKRONISASI PEMBAYARAN KELIPATAN PROMO DI HP PEMBELI
             keranjang.forEach(item => {
                 let sub = 0;
+                let infoPromo = '';
                 
                 if (item.kategori === 'toping') {
                     let qtyToppingIni = item.qty;
@@ -178,8 +178,10 @@
                         if (kuotaToppingGratis >= qtyToppingIni) {
                             kuotaToppingGratis -= qtyToppingIni;
                             qtyBayar = 0;
+                            infoPromo = `<span class="text-[9px] bg-green-100 text-green-700 px-1 rounded font-bold">Promo Gratis</span>`;
                         } else {
                             qtyBayar = qtyToppingIni - kuotaToppingGratis;
+                            infoPromo = `<span class="text-[9px] bg-green-100 text-green-700 px-1 rounded font-bold">Promo ${kuotaToppingGratis} Pcs</span>`;
                             kuotaToppingGratis = 0;
                         }
                     } else {
@@ -192,7 +194,6 @@
                 }
 
                 total += sub;
-                let infoPromo = item.kategori === 'toping' ? `<span class="text-[9px] bg-green-100 text-green-700 px-1 rounded font-bold">Promo Kuota</span>` : '';
 
                 container.innerHTML += `
                     <div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs animate-pop">
