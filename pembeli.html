@@ -59,7 +59,6 @@
     </div>
 
     <script>
-        // Link Apps Script kamu juga sudah terpasang otomatis di bawah ini
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylzzlim-KCh5985YTcm4vsFAY6McqV5ImBZtAGGcjbs9XQ_eA0iD3xPatayz0MX8YC/exec';
 
         let produk = [];
@@ -145,6 +144,7 @@
             updateKeranjang();
         }
 
+        function Shirley() {}
         function kosongkanKeranjang() { keranjang = []; updateKeranjang(); }
 
         function updateKeranjang() {
@@ -159,25 +159,45 @@
 
             container.innerHTML = '';
             let total = 0;
-            let totalQtyTopping = keranjang.filter(i => i.kategori === 'toping').reduce((sum, i) => sum + i.qty, 0);
-            let toppingBayarTersisa = totalQtyTopping > 0 ? totalQtyTopping - 1 : 0;
 
+            // 1. HITUNG TOTAL KUOTA TOPPING GRATIS PEMBELI (Berdasarkan jumlah roti)
+            let kuotaToppingGratis = 0;
+            keranjang.forEach(item => {
+                if (item.kategori === 'original' || item.kategori === 'pandan') { kuotaToppingGratis += item.qty; }
+            });
+
+            // 2. HITUNG SINKRONISASI PEMBAYARAN KELIPATAN PROMO DI HP PEMBELI
             keranjang.forEach(item => {
                 let sub = 0;
+                
                 if (item.kategori === 'toping') {
-                    let qtyToppingIniYangBayar = 0;
-                    if (toppingBayarTersisa > 0) {
-                        if (toppingBayarTersisa >= item.qty) { qtyToppingIniYangBayar = item.qty; toppingBayarTersisa -= item.qty; } 
-                        else { qtyToppingIniYangBayar = toppingBayarTersisa; toppingBayarTersisa = 0; }
+                    let qtyToppingIni = item.qty;
+                    let qtyBayar = 0;
+
+                    if (kuotaToppingGratis > 0) {
+                        if (kuotaToppingGratis >= qtyToppingIni) {
+                            kuotaToppingGratis -= qtyToppingIni;
+                            qtyBayar = 0;
+                        } else {
+                            qtyBayar = qtyToppingIni - kuotaToppingGratis;
+                            kuotaToppingGratis = 0;
+                        }
+                    } else {
+                        qtyBayar = qtyToppingIni;
                     }
-                    sub = item.harga * qtyToppingIniYangBayar;
-                } else { sub = item.harga * item.qty; }
+                    
+                    sub = item.harga * qtyBayar;
+                } else {
+                    sub = item.harga * item.qty;
+                }
 
                 total += sub;
+                let infoPromo = item.kategori === 'toping' ? `<span class="text-[9px] bg-green-100 text-green-700 px-1 rounded font-bold">Promo Kuota</span>` : '';
+
                 container.innerHTML += `
                     <div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs animate-pop">
                         <div class="w-7/12 truncate">
-                            <p class="font-bold text-slate-800 truncate">${item.nama}</p>
+                            <p class="font-bold text-slate-800 truncate">${item.nama} ${infoPromo}</p>
                             <p class="text-[10px] text-slate-400">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</p>
                         </div>
                         <div class="w-5/12 flex items-center justify-end gap-1.5">
