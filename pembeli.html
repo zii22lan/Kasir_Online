@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu Digital - Roti Kadet</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .animate-pop { animation: popCheck 0.2s ease-out; }
+        @keyframes popCheck {
+            0% { transform: scale(0.97); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 min-h-screen overflow-y-auto">
+
+    <div class="flex flex-col lg:flex-row min-h-screen w-full">
+        <div class="w-full lg:w-2/3 p-4 lg:p-6 flex flex-col border-b lg:border-b-0 lg:border-r border-slate-200">
+            <header class="mb-4 bg-white p-4 rounded-xl border border-slate-200 text-center shadow-xs">
+                <h1 class="text-xl font-black text-amber-950 tracking-tight">🍞 Roti Kadet Premium</h1>
+                <p class="text-xs text-slate-400 mt-0.5">Silakan Pilih Menu & Topping Kesukaan Anda</p>
+            </header>
+
+            <div class="flex gap-1.5 mb-4 bg-slate-200/50 p-1 rounded-xl self-start max-w-full overflow-x-auto whitespace-nowrap">
+                <button onclick="filterKategori('all')" id="btn-all" class="category-btn px-4 py-1 bg-amber-800 text-white rounded-lg font-semibold text-xs transition-all cursor-pointer">Semua</button>
+                <button onclick="filterKategori('original')" id="btn-original" class="category-btn px-4 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer">Original</button>
+                <button onclick="filterKategori('pandan')" id="btn-pandan" class="category-btn px-4 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer">Pandan</button>
+                <button onclick="filterKategori('toping')" id="btn-toping" class="category-btn px-4 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer">Toping</button>
+            </div>
+
+            <div id="loading-produk" class="text-center py-12 text-xs font-bold text-slate-400 animate-pulse">Memuat Menu Segar dari Dapur...</div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 lg:gap-4 pb-4 hidden" id="product-grid"></div>
+        </div>
+
+        <div class="w-full lg:w-1/3 bg-white flex flex-col shadow-2xl lg:h-screen lg:sticky lg:top-0">
+            <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/80 shrink-0">
+                <h2 class="font-bold text-slate-700 flex items-center gap-2 text-xs uppercase tracking-wider">
+                    🛒 Pesanan Saya (<span id="cart-count">0</span>)
+                </h2>
+                <button onclick="kosongkanKeranjang()" class="text-xs text-red-500 hover:text-red-700 font-bold transition-colors cursor-pointer">Kosongkan</button>
+            </div>
+
+            <div class="p-3 space-y-2 lg:overflow-y-auto lg:flex-1" id="cart-items">
+                <div class="text-center text-slate-400 py-6 text-xs">Belum ada menu dipilih</div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-3.5 mt-auto shadow-inner pb-8 lg:pb-4">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                    <span class="text-xs font-bold text-slate-500">TOTAL BELANJA</span>
+                    <span id="total-harga" class="text-2xl font-black text-amber-950">Rp 0</span>
+                </div>
+
+                <button onclick="kirimPesanan()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3.5 rounded-xl shadow-md transition-all duration-300 active:scale-[0.98] text-center text-xs tracking-wide cursor-pointer">
+                    🚀 KIRIM PESANAN KE KASIR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Link Apps Script kamu juga sudah terpasang otomatis di bawah ini
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylzzlim-KCh5985YTcm4vsFAY6McqV5ImBZtAGGcjbs9XQ_eA0iD3xPatayz0MX8YC/exec';
+
+        let produk = [];
+        let keranjang = [];
+        let kategoriAktif = 'all';
+
+        tarikDataMenuOnline();
+
+        function tarikDataMenuOnline() {
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(res => res.json())
+                .then(data => {
+                    produk = data.produk;
+                    document.getElementById('loading-produk').classList.add('hidden');
+                    document.getElementById('product-grid').classList.remove('hidden');
+                    tampilkanProduk();
+                }).catch(err => {
+                    document.getElementById('loading-produk').innerText = "Gagal memuat menu. Cek koneksi internet Anda.";
+                });
+        }
+
+        function tampilkanProduk() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            produk.forEach(p => {
+                if (kategoriAktif !== 'all' && p.kategori !== kategoriAktif) return;
+                
+                let isHabis = p.stok <= 0;
+                let cardStyle = isHabis ? 'opacity-40 pointer-events-none' : 'hover:shadow-md active:scale-95 cursor-pointer';
+                let labelStok = isHabis ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1 rounded">Habis</span>' : `<span class="text-slate-400 text-[11px]">Stok: ${p.stok}</span>`;
+
+                grid.innerHTML += `
+                    <div onclick="tambahKeKeranjang(${p.id})" class="bg-white rounded-xl overflow-hidden border border-slate-200 flex flex-col justify-between transition-all duration-200 shadow-xs ${cardStyle} animate-pop">
+                        <div class="relative overflow-hidden h-24 sm:h-28 bg-slate-100">
+                            <img src="${p.foto}" class="w-full h-full object-cover" alt="${p.nama}" onerror="this.src='https://placehold.co/200x150?text=Roti'">
+                        </div>
+                        <div class="p-2 flex flex-col justify-between flex-1">
+                            <h3 class="font-bold text-slate-800 text-[11px] truncate">${p.nama}</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <span class="text-amber-900 font-black text-[11px]">Rp ${p.harga.toLocaleString('id-ID')}</span>
+                                ${labelStok}
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function filterKategori(kat) {
+            kategoriAktif = kat;
+            tampilkanProduk();
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = "category-btn px-4 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer";
+            });
+            document.getElementById('btn-' + kat).className = "category-btn px-4 py-1 bg-amber-800 text-white rounded-lg font-semibold text-xs shadow-xs transition-all cursor-pointer";
+        }
+
+        function tambahKeKeranjang(id) {
+            const prod = produk.find(p => p.id === id);
+            const ada = keranjang.find(item => item.id === id);
+            
+            let qtySekarang = ada ? ada.qty : 0;
+            if (qtySekarang >= prod.stok) {
+                alert(`Maaf, Anda hanya bisa memesan maksimal ${prod.stok} pcs untuk menu ini.`);
+                return;
+            }
+
+            if (ada) { ada.qty++; } else { keranjang.push({ ...prod, qty: 1 }); }
+            updateKeranjang();
+        }
+
+        function ubahQty(id, jumlah) {
+            const item = keranjang.find(i => i.id === id);
+            const prod = produk.find(p => p.id === id);
+            if (!item) return;
+
+            if (jumlah > 0 && item.qty >= prod.stok) {
+                alert("Batas maksimal stok yang tersedia telah tercapai.");
+                return;
+            }
+
+            item.qty += jumlah;
+            if (item.qty <= 0) { keranjang = keranjang.filter(i => i.id !== id); }
+            updateKeranjang();
+        }
+
+        function kosongkanKeranjang() { keranjang = []; updateKeranjang(); }
+
+        function updateKeranjang() {
+            const container = document.getElementById('cart-items');
+            document.getElementById('cart-count').innerText = keranjang.reduce((sum, i) => sum + i.qty, 0);
+
+            if (keranjang.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-400 py-6 text-xs">Belum ada menu dipilih</div>`;
+                document.getElementById('total-harga').innerText = "Rp 0";
+                return;
+            }
+
+            container.innerHTML = '';
+            let total = 0;
+            let totalQtyTopping = keranjang.filter(i => i.kategori === 'toping').reduce((sum, i) => sum + i.qty, 0);
+            let toppingBayarTersisa = totalQtyTopping > 0 ? totalQtyTopping - 1 : 0;
+
+            keranjang.forEach(item => {
+                let sub = 0;
+                if (item.kategori === 'toping') {
+                    let qtyToppingIniYangBayar = 0;
+                    if (toppingBayarTersisa > 0) {
+                        if (toppingBayarTersisa >= item.qty) { qtyToppingIniYangBayar = item.qty; toppingBayarTersisa -= item.qty; } 
+                        else { qtyToppingIniYangBayar = toppingBayarTersisa; toppingBayarTersisa = 0; }
+                    }
+                    sub = item.harga * qtyToppingIniYangBayar;
+                } else { sub = item.harga * item.qty; }
+
+                total += sub;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs animate-pop">
+                        <div class="w-7/12 truncate">
+                            <p class="font-bold text-slate-800 truncate">${item.nama}</p>
+                            <p class="text-[10px] text-slate-400">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</p>
+                        </div>
+                        <div class="w-5/12 flex items-center justify-end gap-1.5">
+                            <span class="font-extrabold text-[11px] text-slate-800">Rp ${sub.toLocaleString('id-ID')}</span>
+                            <div class="flex border border-slate-300 rounded bg-white overflow-hidden">
+                                <button onclick="ubahQty(${item.id}, -1)" class="px-1.5 py-0.5 bg-slate-50 font-black active:bg-slate-200">-</button>
+                                <span class="px-1 py-0.5 font-bold">${item.qty}</span>
+                                <button onclick="ubahQty(${item.id}, 1)" class="px-1.5 py-0.5 bg-slate-50 font-black active:bg-slate-200">+</button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById('total-harga').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+        }
+
+        function kirimPesanan() {
+            if (keranjang.length === 0) return alert("Pilih menu terlebih dahulu!");
+            
+            const total = parseInt(document.getElementById('total-harga').innerText.replace(/[^0-9]/g, ''));
+            const notaId = 'QR-' + Math.floor(100000 + Math.random() * 900000);
+            const waktuSkrg = new Date().toLocaleString('id-ID');
+            let ringkasanItem = [];
+            keranjang.forEach(item => ringkasanItem.push(`${item.nama} [x${item.qty}]`));
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: notaId, tanggal: waktuSkrg, items: ringkasanItem.join(', '), total: total, cartData: keranjang, status: "ANTREAN" })
+            }).then(() => {
+                alert("Pesanan sukses dikirim!\nSilakan ke kasir untuk melakukan pembayaran dengan menyebutkan nomor ID: " + notaId);
+                keranjang = [];
+                updateKeranjang();
+                tarikDataMenuOnline(); 
+            }).catch(err => alert("Koneksi gagal, coba kirim pesanan lagi."));
+        }
+    </script>
+</body>
+</html>
+
