@@ -17,6 +17,7 @@
 <body class="text-slate-100 min-h-screen overflow-x-hidden">
 
     <div class="flex flex-col lg:flex-row min-h-screen w-full">
+        <!-- SEKTOR KIRI: MENU MAKANAN -->
         <div class="w-full lg:w-2/3 p-4 lg:p-6 flex flex-col justify-between bg-[#0e1424]">
             <div>
                 <header class="mb-5 bg-[#151f32] p-5 rounded-2xl border border-slate-800 text-center shadow-2xl">
@@ -24,14 +25,15 @@
                     <p class="text-xs text-slate-400 mt-1">E-Menu Smart Ordering System</p>
                 </header>
 
+                <!-- INPUT IDENTITAS PELANGGAN DI HP -->
                 <div class="grid grid-cols-2 gap-3 mb-5 bg-[#121a2c] p-3 rounded-2xl border border-slate-800/80">
                     <div>
                         <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nama Anda</label>
                         <input type="text" id="cust-name-online" class="w-full bg-[#1a233a] border border-slate-700/60 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400" placeholder="Input Nama">
                     </div>
                     <div>
-                        <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nomor Meja</label>
-                        <input type="number" id="cust-table-online" class="w-full bg-[#1a233a] border border-slate-700/60 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400" placeholder="Meja Ke berapa">
+                        <label class="text-[9px] font-bold text-amber-400 uppercase tracking-wider block mb-1">No. Antrean Anda (Live)</label>
+                        <input type="text" id="cust-queue-online" class="w-full bg-[#251e15] border border-amber-500/20 rounded-xl px-3 py-2 text-xs text-amber-400 font-extrabold font-mono focus:outline-none" readonly value="Loading...">
                     </div>
                 </div>
 
@@ -47,6 +49,7 @@
             </div>
         </div>
 
+        <!-- SEKTOR KANAN: CHECKOUT BILL -->
         <div class="w-full lg:w-1/3 bg-[#111726] flex flex-col shadow-2xl lg:h-screen lg:sticky lg:top-0 border-l border-slate-800/60">
             <div class="px-4 py-4 border-b border-slate-800 flex justify-between items-center bg-[#141c30] shrink-0">
                 <h2 class="font-extrabold text-slate-200 flex items-center gap-2 text-xs uppercase tracking-wider">
@@ -66,7 +69,7 @@
                 </div>
 
                 <button onclick="kirimPesanan()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-4 rounded-xl shadow-lg transition-all text-xs tracking-wider cursor-pointer">
-                    🚀 KIRIM DIKLIK KE DAPUR KASIR
+                    🚀 KIRIM PESANAN KE KASIR
                 </button>
             </div>
         </div>
@@ -78,6 +81,7 @@
         let produk = [];
         let keranjang = [];
         let kategoriAktif = 'all';
+        let liveAntreanNumberPembeli = 1;
 
         tarikDataMenuOnline();
 
@@ -86,6 +90,9 @@
                 .then(res => res.json())
                 .then(data => {
                     produk = data.produk;
+                    liveAntreanNumberPembeli = data.nextAntrean;
+                    document.getElementById('cust-queue-online').value = "No. Antrean #" + liveAntreanNumberPembeli;
+                    
                     document.getElementById('loading-produk').classList.add('hidden');
                     document.getElementById('product-grid').classList.remove('hidden');
                     tampilkanProduk();
@@ -99,7 +106,6 @@
             grid.innerHTML = '';
             produk.forEach(p => {
                 if (kategoriAktif !== 'all' && p.kategori !== kategoriAktif) return;
-                
                 let isHabis = p.stok <= 0;
                 let cardStyle = isHabis ? 'opacity-30 pointer-events-none' : 'hover:border-slate-700 active:scale-95 cursor-pointer';
                 let labelStok = isHabis ? '<span class="text-[10px] bg-rose-500/10 border border-rose-500/20 text-rose-400 px-1.5 py-0.2 rounded font-bold">Sold Out</span>' : `<span class="text-slate-400 text-[11px]">Stok: ${p.stok}</span>`;
@@ -132,7 +138,6 @@
         function tambahKeKeranjang(id) {
             const prod = produk.find(p => p.id === id);
             const ada = keranjang.find(item => item.id === id);
-            
             let qtySekarang = ada ? ada.qty : 0;
             if (qtySekarang >= prod.stok) return alert("Pemesanan dibatalkan, kuota limit stok gudang tercapai.");
 
@@ -165,15 +170,12 @@
             }
 
             container.innerHTML = '';
-            
-            // LOGIKA PROMO 1:1 DI LAYAR PEMBELI
             let kuotaToppingGratis = 0;
             keranjang.forEach(item => {
                 if (item.kategori === 'original' || item.kategori === 'pandan') { kuotaToppingGratis += item.qty; }
             });
 
             let total = 0;
-
             keranjang.forEach(item => {
                 let sub = 0;
                 let infoPromo = '';
@@ -192,14 +194,9 @@
                             infoPromo = `<span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.2 rounded font-bold ml-1">Free ${kuotaToppingGratis} Pcs</span>`;
                             kuotaToppingGratis = 0;
                         }
-                    } else {
-                        qtyBayar = qtyToppingIni;
-                    }
-                    
+                    } else { qtyBayar = qtyToppingIni; }
                     sub = item.harga * qtyBayar;
-                } else {
-                    sub = item.harga * item.qty;
-                }
+                } else { sub = item.harga * item.qty; }
 
                 total += sub;
 
@@ -225,11 +222,8 @@
 
         function kirimPesanan() {
             if (keranjang.length === 0) return alert("Pilih menu terlebih dahulu!");
-            
             const nameOnline = document.getElementById('cust-name-online').value.trim();
-            const tableOnline = document.getElementById('cust-table-online').value.trim();
-
-            if (!nameOnline || !tableOnline) return alert("Harap isi Nama Anda dan Nomor Meja terlebih dahulu!");
+            if (!nameOnline) return alert("Harap masukkan Nama Anda terlebih dahulu!");
 
             const total = parseInt(document.getElementById('total-harga').innerText.replace(/[^0-9]/g, ''));
             const notaId = 'QR-' + Math.floor(100000 + Math.random() * 900000);
@@ -241,15 +235,14 @@
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: notaId, tanggal: waktuSkrg, pelanggan: nameOnline, meja: "Meja " + tableOnline, items: ringkasanItem.join(', '), total: total, cartData: keranjang, status: "ANTREAN" })
+                body: JSON.stringify({ id: notaId, tanggal: waktuSkrg, pelanggan: nameOnline, antreanNum: liveAntreanNumberPembeli, items: ringkasanItem.join(', '), total: total, cartData: keranjang, status: "ANTREAN" })
             }).then(() => {
-                alert(`Pesanan sukses terkirim ke dapur kasir!\n\nID Registrasi Anda: ${notaId}\nSilakan tunggu di meja ${tableOnline}, pembayaran dapat diselesaikan saat hidangan diantarkan.`);
+                alert(`Pesanan sukses dikirim!\n\nNama: ${nameOnline}\nNomor Antrean Anda: No. ${liveAntreanNumberPembeli}\n\nSilakan ke kasir untuk konfirmasi bill Anda.`);
                 keranjang = [];
                 document.getElementById('cust-name-online').value = '';
-                document.getElementById('cust-table-online').value = '';
                 updateKeranjang();
                 tarikDataMenuOnline(); 
-            }).catch(err => alert("Gangguan sinyal internet, coba sekali lagi."));
+            }).catch(err => alert("Gangguan jaringan, silakan kirim ulang."));
         }
     </script>
 </body>
