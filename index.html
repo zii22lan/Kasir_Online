@@ -3,157 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir Pro - Roti Kadet v2.0</title>
+    <title>Kadet POS - Executive Luxury Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         @media print {
             body * { display: none !important; }
-            #struk-print, #struk-print * { 
-                display: block !important; 
-                visibility: visible !important;
-                color: #000000 !important;
-                font-family: 'Courier New', Courier, monospace !important;
-            }
+            #struk-print, #struk-print * { display: block !important; visibility: visible !important; color: #000000 !important; font-family: 'Courier New', Courier, monospace !important; }
             #struk-print { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; padding: 0 !important; margin: 0 !important; }
-            #struk-print img { display: block !important; max-width: 80px !important; margin: 0 auto 6px auto !important; }
         }
-        .animate-pop { animation: popCheck 0.2s ease-out; }
-        @keyframes popCheck {
-            0% { transform: scale(0.97); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .stok-critical { animation: pulseBg 1.5s infinite; }
-        @keyframes pulseBg {
-            0%, 100% { background-color: #fee2e2; }
-            50% { background-color: #fca5a5; }
-        }
+        .animate-pop { animation: popCheck 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes popCheck { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 min-h-screen overflow-y-auto">
+<body class="text-slate-100 min-h-screen overflow-x-hidden">
 
     <div class="flex flex-col lg:flex-row min-h-screen w-full">
-        <div class="w-full lg:w-2/3 p-4 lg:p-6 flex flex-col border-b lg:border-b-0 lg:border-r border-slate-200 bg-slate-50">
-            <header class="mb-4 flex justify-between items-center bg-white p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-xs border border-slate-200/80">
-                <div>
-                    <h1 class="text-lg lg:text-2xl font-black text-amber-950 tracking-tight flex items-center gap-1.5">
-                        🍞 Roti Kadet <span class="text-[10px] lg:text-xs bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded-md">PRO SYSTEM</span>
-                    </h1>
-                    <p class="text-[10px] lg:text-xs text-slate-400">Sistem Kasir Pintar Real-Time Cloud</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="bukaModalAntrean()" class="px-2.5 py-1.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-[11px] font-bold shadow-sm transition-all duration-200 active:scale-95 cursor-pointer flex items-center gap-1">
-                        📥 Antrean QR <span id="badge-antrean" class="bg-white text-amber-900 rounded-full px-1 text-[9px] font-black hidden">0</span>
-                    </button>
-                    <button onclick="bukaModalMenu()" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-850 text-white rounded-lg text-[11px] font-bold shadow-sm transition-all cursor-pointer">
-                        ⚙️ Menu
-                    </button>
-                </div>
-            </header>
+        <div class="w-full lg:w-2/3 p-4 lg:p-6 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800/80 bg-[#0e1424]">
+            <div>
+                <header class="mb-5 flex flex-col sm:flex-row gap-3 justify-between sm:items-center bg-[#151f32] p-4 rounded-2xl border border-slate-800 shadow-xl">
+                    <div>
+                        <h1 class="text-xl lg:text-2xl font-extrabold text-amber-400 tracking-tight flex items-center gap-2">
+                            👑 ROTI KADET <span class="text-[10px] bg-amber-500/10 text-amber-400 font-bold border border-amber-500/30 px-2 py-0.5 rounded-full">PREMIUM POS v3.0</span>
+                        </h1>
+                        <p class="text-xs text-slate-400 mt-0.5">Sistem Kasir Lounge & Restoran Modern</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="bukaModalAntrean()" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-bold shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-1.5">
+                            📥 Antrean QR <span id="badge-antrean" class="bg-slate-950 text-amber-400 rounded-full px-1.5 py-0.5 text-[10px] font-black hidden">0</span>
+                        </button>
+                        <button onclick="bukaModalMenu()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition-all border border-slate-700 cursor-pointer">
+                            ⚙️ Cek Stok
+                        </button>
+                    </div>
+                </header>
 
-            <div class="flex gap-1.5 mb-4 bg-slate-200/50 p-1 rounded-xl self-start max-w-full overflow-x-auto whitespace-nowrap">
-                <button onclick="filterKategori('all')" id="btn-all" class="category-btn px-3 py-1 bg-amber-800 text-white rounded-lg font-semibold text-xs shadow-xs transition-all cursor-pointer">Semua</button>
-                <button onclick="filterKategori('original')" id="btn-original" class="category-btn px-3 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer">Original</button>
-                <button onclick="filterKategori('pandan')" id="btn-pandan" class="category-btn px-3 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer">Pandan</button>
-                <button onclick="filterKategori('toping')" id="btn-toping" class="category-btn px-3 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer">Toping</button>
+                <div class="flex gap-2 mb-5 bg-[#151f32] p-1.5 rounded-xl self-start max-w-full overflow-x-auto whitespace-nowrap border border-slate-800/60">
+                    <button onclick="filterKategori('all')" id="btn-all" class="category-btn px-4 py-1.5 bg-amber-500 text-slate-950 rounded-lg font-bold text-xs shadow-md transition-all cursor-pointer">Semua Menu</button>
+                    <button onclick="filterKategori('original')" id="btn-original" class="category-btn px-4 py-1.5 text-slate-400 rounded-lg font-semibold text-xs hover:text-slate-200 transition-all cursor-pointer">Original Varian</button>
+                    <button onclick="filterKategori('pandan')" id="btn-pandan" class="category-btn px-4 py-1.5 text-slate-400 rounded-lg font-semibold text-xs hover:text-slate-200 transition-all cursor-pointer">Pandan Varian</button>
+                    <button onclick="filterKategori('toping')" id="btn-toping" class="category-btn px-4 py-1.5 text-slate-400 rounded-lg font-semibold text-xs hover:text-slate-200 transition-all cursor-pointer">Premium Topping</button>
+                </div>
+
+                <div id="loading-produk" class="text-center py-16 text-xs font-bold text-slate-500 animate-pulse">Menghubungkan enkripsi database Google Cloud...</div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 pb-6 hidden" id="product-grid"></div>
             </div>
 
-            <div id="loading-produk" class="text-center py-12 text-xs font-bold text-slate-400 animate-pulse">Menyinkronkan Stok dengan Cloud...</div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 lg:gap-4 pb-4 hidden" id="product-grid"></div>
+            <div class="bg-[#111a2e] border border-slate-800 p-4 rounded-2xl grid grid-cols-2 gap-4 shadow-inner mt-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xl">💰</div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Omzet Live Hari Ini</p>
+                        <h4 id="summary-omzet" class="text-base lg:text-lg font-black text-emerald-400">Rp 0</h4>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 border-l border-slate-800 pl-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-xl">📄</div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Nota Berhasil</p>
+                        <h4 id="summary-nota" class="text-base lg:text-lg font-black text-blue-400">0 Invoice</h4>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="w-full lg:w-1/3 bg-white flex flex-col shadow-2xl lg:h-screen lg:sticky lg:top-0">
-            <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/80 shrink-0">
-                <h2 class="font-bold text-slate-700 flex items-center gap-2 text-xs uppercase tracking-wider">
-                    🛒 Item Pesanan (<span id="cart-count">0</span>) <span id="label-nota-qr" class="text-amber-800 font-mono text-[10px] hidden"></span>
-                </h2>
-                <button onclick="kosongkanKeranjang()" class="text-xs text-red-500 hover:text-red-700 font-bold transition-colors cursor-pointer">Kosongkan</button>
+        <div class="w-full lg:w-1/3 bg-[#111726] flex flex-col shadow-2xl lg:h-screen lg:sticky lg:top-0 border-l border-slate-800/60">
+            <div class="p-4 border-b border-slate-800 bg-[#141c30] space-y-3 shrink-0">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-extrabold text-slate-200 flex items-center gap-2 text-xs uppercase tracking-wider">
+                        🛒 BILLING SYSTEM (<span id="cart-count">0</span>) <span id="label-nota-qr" class="text-amber-400 font-mono text-[10px] hidden"></span>
+                    </h2>
+                    <button onclick="kosongkanKeranjang()" class="text-xs text-rose-400 hover:text-rose-300 font-bold transition-colors cursor-pointer">Reset Bill</button>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-slate-400 tracking-wide block mb-1">Nama Pelanggan</label>
+                        <input type="text" id="customer-name" class="w-full bg-[#1c263f] border border-slate-700/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 placeholder-slate-500" placeholder="Ex: Ananda">
+                    </div>
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-slate-400 tracking-wide block mb-1">No Meja / Jenis</label>
+                        <input type="text" id="table-number" class="w-full bg-[#1c263f] border border-slate-700/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 placeholder-slate-500" placeholder="Ex: Meja 04 / Takeaway">
+                    </div>
+                </div>
             </div>
 
             <div class="p-3 space-y-2 lg:overflow-y-auto lg:flex-1" id="cart-items"></div>
 
-            <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-3.5 mt-auto shadow-inner pb-8 lg:pb-4">
-                <div class="space-y-1.5 border-b border-slate-200 pb-2">
-                    <div class="flex justify-between text-xs text-slate-500 font-medium">
-                        <span>Subtotal Tagihan</span>
-                        <span id="subtotal">Rp 0</span>
+            <div class="p-4 border-t border-slate-800 bg-[#131b2e] space-y-3 mt-auto shadow-inner pb-8 lg:pb-4">
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs text-slate-400">
+                        <span>Harga Kotor Masakan</span>
+                        <span id="subtotal" class="font-mono">Rp 0</span>
                     </div>
-                    <div class="flex justify-between items-center pt-1">
-                        <span class="text-xs font-bold text-slate-500">TOTAL BERSIH</span>
-                        <span id="total-harga" class="text-2xl font-black text-amber-950">Rp 0</span>
+                    <div class="flex justify-between items-center pt-1 border-t border-slate-800/60">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">TOTAL NETTO</span>
+                        <span id="total-harga" class="text-2xl font-black text-amber-400 font-mono">Rp 0</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="pilihMetode('TUNAI')" id="pay-tunai" class="py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-amber-800 text-white border-amber-800">💵 TUNAI</button>
-                    <button onclick="pilihMetode('QRIS')" id="pay-qris" class="py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-white text-slate-600 border-slate-200 hover:border-slate-300">📱 QRIS</button>
+                    <button onclick="pilihMetode('TUNAI')" id="pay-tunai" class="py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-amber-500 text-slate-950 border-amber-500">💵 CASH / TUNAI</button>
+                    <button onclick="pilihMetode('QRIS')" id="pay-qris" class="py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-transparent text-slate-400 border-slate-700 hover:border-slate-600">📱 DIGITAL QRIS</button>
                 </div>
 
-                <div class="grid grid-cols-3 gap-2 items-center" id="cash-input-section">
-                    <label class="text-[11px] font-bold text-slate-500 uppercase col-span-1">Bayar (Cash)</label>
+                <div class="grid grid-cols-3 gap-2 items-center bg-[#192239] p-2 rounded-xl border border-slate-800" id="cash-input-section">
+                    <label class="text-[10px] font-bold text-slate-300 col-span-1">TUNAI TERIMA</label>
                     <div class="relative col-span-2">
-                        <span class="absolute left-3 top-2 font-bold text-slate-400 text-xs">Rp</span>
-                        <input type="number" id="cash-amount" oninput="hitungKembalian()" class="w-full pl-8 pr-2 py-1.5 bg-white border border-slate-300 rounded-lg text-sm text-right font-black text-slate-800 focus:outline-none focus:border-amber-700" placeholder="0">
+                        <span class="absolute left-2.5 top-1 font-bold text-slate-500 text-xs">Rp</span>
+                        <input type="number" id="cash-amount" oninput="hitungKembalian()" class="w-full pl-7 pr-1 bg-transparent text-xs text-right font-black text-emerald-400 focus:outline-none" placeholder="0">
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center bg-white px-2.5 py-2 rounded-lg border border-slate-200" id="change-section">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase">Kembalian</span>
-                    <span id="change-amount" class="text-sm font-black text-slate-400">Rp 0</span>
+                <div class="flex justify-between items-center bg-[#151e33] px-3 py-2 rounded-xl border border-slate-800/80" id="change-section">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Uang Kembalian</span>
+                    <span id="change-amount" class="text-xs font-black text-slate-400 font-mono">Rp 0</span>
                 </div>
 
-                <button onclick="prosesTransaksi()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 rounded-xl shadow-md transition-all duration-200 active:scale-[0.98] text-center text-xs tracking-wide">
-                    CETAK STRUK & SIMPAN DATA
-                </button>
+                <div class="flex gap-2">
+                    <button onclick="prosesTransaksi('print')" class="w-2/3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold py-3 rounded-xl shadow-lg transition-all text-xs tracking-wider cursor-pointer">
+                        🖨️ KUNCI & CETAK STRUK
+                    </button>
+                    <button onclick="prosesTransaksi('wa')" class="w-1/3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all text-xs tracking-wider cursor-pointer flex items-center justify-center gap-1">
+                        💬 WA STRUK
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="modal-antrean" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
-        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[80vh]">
-            <div class="p-4 border-b flex justify-between items-center bg-slate-50 rounded-t-2xl">
-                <h3 class="font-bold text-slate-800 flex items-center gap-1.5">📥 Antrean Masuk via QR Meja</h3>
-                <button onclick="tutupModalAntrean()" class="text-slate-400 hover:text-slate-600 font-bold text-lg cursor-pointer">&times;</button>
+    <div id="modal-antrean" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
+        <div class="bg-[#111726] border border-slate-800 rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[80vh]">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#141c30] rounded-t-2xl">
+                <h3 class="font-bold text-amber-400 flex items-center gap-1.5 text-sm">📥 Antrean Pelanggan via QR Meja</h3>
+                <button onclick="tutupModalAntrean()" class="text-slate-400 hover:text-slate-200 font-bold text-lg cursor-pointer">&times;</button>
             </div>
             <div class="p-4 overflow-y-auto space-y-3 flex-1" id="list-antrean-container"></div>
-            <div class="p-3 border-t bg-slate-50 rounded-b-2xl text-right">
-                <button onclick="tarikDataCloud()" class="bg-amber-800 text-white font-bold px-3 py-2 rounded-lg text-xs mr-2 cursor-pointer">🔄 Segarkan</button>
-                <button onclick="tutupModalAntrean()" class="bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-lg text-xs cursor-pointer">Tutup</button>
+            <div class="p-3 border-t border-slate-800 bg-[#141c30] rounded-b-2xl text-right">
+                <button onclick="tarikDataCloud()" class="bg-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs mr-2 cursor-pointer">🔄 Sync Live</button>
+                <button onclick="tutupModalAntrean()" class="bg-slate-800 text-slate-300 font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer">Tutup</button>
             </div>
         </div>
     </div>
 
-    <div id="modal-menu" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
-        <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh]">
-            <div class="p-4 border-b flex justify-between items-center bg-slate-50 rounded-t-2xl">
-                <h3 class="font-bold text-slate-800 flex items-center gap-1.5">🛠️ Pengaturan Menu (Lihat Stok Sheets)</h3>
-                <button onclick="tutupModalMenu()" class="text-slate-400 hover:text-slate-600 font-bold text-lg cursor-pointer">&times;</button>
+    <div id="modal-menu" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
+        <div class="bg-[#111726] border border-slate-800 rounded-2xl w-full max-w-xl shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#141c30] rounded-t-2xl">
+                <h3 class="font-bold text-slate-200 flex items-center gap-1.5 text-sm">📋 Manajemen Gudang & Stok Live</h3>
+                <button onclick="tutupModalMenu()" class="text-slate-400 hover:text-slate-200 font-bold text-lg cursor-pointer">&times;</button>
             </div>
             <div class="p-4 overflow-y-auto space-y-2 flex-1" id="edit-prices-list"></div>
         </div>
     </div>
 
-    <div id="struk-print" style="display:none; width: 100%; max-width: 280px; font-family: monospace; color: #000; font-size: 11px;">
-        <div style="text-align: center; margin-bottom: 10px;">
-            <img src="assets/logo.jpg.png" alt="Logo" style="width: 60px; height: 60px; object-contain; margin: 0 auto 4px auto; display: block;">
-            <strong style="font-size: 13px; text-transform: uppercase;">Roti Kadet Premium</strong><br>
-            <span style="font-size: 9px;">Manis & Lembut Di Setiap Gigitan</span><br>
+    <div id="struk-print" style="display:none; width: 100%; max-width: 260px; font-family: monospace; color: #000; font-size: 11px;">
+        <div style="text-align: center; margin-bottom: 8px;">
+            <strong style="font-size: 14px; text-transform: uppercase;">ROTI KADET PREMIUM</strong><br>
+            <span style="font-size: 9px;">Luxury Lounge & Resto Service</span><br>
             --------------------------------
         </div>
-        <table style="width: 100%; font-size: 11px; border-collapse: collapse; color: #000;">
-            <tr><td>No. Nota</td><td>:</td><td id="struk-id" style="font-weight: bold;">-</td></tr>
-            <tr><td>Tanggal</td><td>:</td><td id="struk-date">-</td></tr>
-            <tr><td>Metode</td><td>:</td><td id="struk-method" style="font-weight: bold;">-</td></tr>
+        <table style="width: 100%; font-size: 11px; color: #000; border-collapse: collapse;">
+            <tr><td>Nota ID</td><td>:</td><td id="struk-id" style="font-weight:bold;">-</td></tr>
+            <tr><td>Pelanggan</td><td>:</td><td id="struk-cust">-</td></tr>
+            <tr><td>No Meja</td><td>:</td><td id="struk-table" style="font-weight:bold;">-</td></tr>
+            <tr><td>Waktu</td><td>:</td><td id="struk-date">-</td></tr>
+            <tr><td>Metode</td><td>:</td><td id="struk-method">-</td></tr>
         </table>
-        <div style="margin: 5px 0;">--------------------------------</div>
+        <div style="margin: 4px 0;">--------------------------------</div>
         <div id="struk-items" style="width: 100%; color: #000;"></div>
-        <div style="margin: 5px 0;">--------------------------------</div>
+        <div style="margin: 4px 0;">--------------------------------</div>
         <table style="width: 100%; font-size: 11px; text-align: right; color: #000;">
-            <tr><td style="text-align: left;">TOTAL</td><td>:</td><td id="struk-total" style="font-weight: bold;">Rp 0</td></tr>
-            <tr><td style="text-align: left;">BAYAR</td><td>:</td><td id="struk-cash">Rp 0</td></tr>
+            <tr><td style="text-align: left; font-weight:bold;">TOTAL NETTO</td><td>:</td><td id="struk-total" style="font-weight: bold;">Rp 0</td></tr>
+            <tr><td style="text-align: left;">DIBAYAR</td><td>:</td><td id="struk-cash">Rp 0</td></tr>
             <tr><td style="text-align: left; font-weight: bold;">KEMBALIAN</td><td>:</td><td id="struk-change" style="font-weight: bold;">Rp 0</td></tr>
         </table>
-        <div style="margin: 5px 0;">--------------------------------</div>
-        <div style="text-align: center; font-size: 10px; margin-top: 5px;"><strong>Terima Kasih Atas Kunjungan Anda!</strong></div>
+        <div style="margin: 4px 0;">--------------------------------</div>
+        <div style="text-align: center; font-size: 9px; margin-top: 4px;"><strong>Matur Nuhun, Selamat Menikmati Hidangan Kami!</strong></div>
     </div>
 
     <script>
@@ -166,7 +195,7 @@
         let notaIdAktif = null;
         let listAntreanAktif = [];
 
-        setInterval(tarikDataCloud, 15000);
+        setInterval(tarikDataCloud, 20000);
         tarikDataCloud();
 
         function tarikDataCloud() {
@@ -176,6 +205,9 @@
                     produk = data.produk;
                     listAntreanAktif = data.antrean;
                     
+                    document.getElementById('summary-omzet').innerText = `Rp ${data.ringkasan.omzet.toLocaleString('id-ID')}`;
+                    document.getElementById('summary-nota').innerText = `${data.ringkasan.notaCount} Invoice`;
+
                     const badge = document.getElementById('badge-antrean');
                     if (listAntreanAktif.length > 0) {
                         badge.innerText = listAntreanAktif.length;
@@ -185,7 +217,7 @@
                     document.getElementById('loading-produk').classList.add('hidden');
                     document.getElementById('product-grid').classList.remove('hidden');
                     tampilkanProduk();
-                }).catch(e => console.log("Gagal sinkron cloud"));
+                }).catch(e => console.log("Database Cloud Offline"));
         }
 
         function tampilkanProduk() {
@@ -194,19 +226,19 @@
             produk.forEach(p => {
                 if (kategoriAktif !== 'all' && p.kategori !== kategoriAktif) return;
                 
-                let labelStokColor = p.stok <= 5 ? 'bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded text-[10px] animate-pulse' : 'text-slate-400 text-[11px]';
-                let cardDisable = p.stok <= 0 ? 'opacity-50 pointer-events-none' : '';
+                let labelColor = p.stok <= 5 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20 px-1.5 py-0.5 rounded text-[10px]' : 'text-slate-400 text-[11px]';
+                let cardDisable = p.stok <= 0 ? 'opacity-30 pointer-events-none' : '';
 
                 grid.innerHTML += `
-                    <div onclick="tambahKeKeranjang(${p.id})" class="bg-white rounded-xl overflow-hidden border border-slate-200 flex flex-col justify-between cursor-pointer transition-all duration-300 active:scale-95 shadow-xs hover:shadow-md ${cardDisable} animate-pop">
-                        <div class="relative overflow-hidden h-24 sm:h-28 bg-slate-100">
-                            <img src="${p.foto}" class="w-full h-full object-cover" alt="${p.nama}" onerror="this.src='https://placehold.co/200x150?text=Roti'">
+                    <div onclick="tambahKeKeranjang(${p.id})" class="bg-[#131b2e] border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer transition-all active:scale-95 hover:border-slate-700 shadow-lg ${cardDisable} animate-pop">
+                        <div class="relative overflow-hidden h-24 bg-slate-900/40">
+                            <img src="${p.foto}" class="w-full h-full object-cover" alt="${p.nama}" onerror="this.src='https://placehold.co/200x150?text=Food'">
                         </div>
-                        <div class="p-2 flex flex-col justify-between flex-1">
-                            <h3 class="font-bold text-slate-800 text-[11px] truncate">${p.nama}</h3>
-                            <div class="flex justify-between items-center mt-1">
-                                <span class="text-amber-900 font-black text-[11px]">Rp ${p.harga.toLocaleString('id-ID')}</span>
-                                <span class="${labelStokColor}">Stok: ${p.stok <= 0 ? 'Habis' : p.stok}</span>
+                        <div class="p-3 flex flex-col justify-between flex-1">
+                            <h3 class="font-bold text-slate-200 text-xs truncate">${p.nama}</h3>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-amber-400 font-extrabold text-xs">Rp ${p.harga.toLocaleString('id-ID')}</span>
+                                <span class="${labelColor}">Stok: ${p.stok <= 0 ? 'Habis' : p.stok}</span>
                             </div>
                         </div>
                     </div>`;
@@ -217,9 +249,9 @@
             kategoriAktif = kat;
             tampilkanProduk();
             document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.className = "category-btn px-3 py-1 text-slate-600 rounded-lg font-semibold text-xs hover:bg-white/50 transition-all cursor-pointer";
+                btn.className = "category-btn px-4 py-1.5 text-slate-400 rounded-lg font-semibold text-xs hover:text-slate-200 transition-all cursor-pointer";
             });
-            document.getElementById('btn-' + kat).className = "category-btn px-3 py-1 bg-amber-800 text-white rounded-lg font-semibold text-xs shadow-xs transition-all cursor-pointer";
+            document.getElementById('btn-' + kat).className = "category-btn px-4 py-1.5 bg-amber-500 text-slate-950 rounded-lg font-bold text-xs shadow-md transition-all cursor-pointer";
         }
 
         function tambahKeKeranjang(id) {
@@ -227,7 +259,7 @@
             const ada = keranjang.find(item => item.id === id);
             
             let qtySekarang = ada ? ada.qty : 0;
-            if (qtySekarang >= prod.stok) return alert("Tidak bisa menambah! Batas maksimal stok aman.");
+            if (qtySekarang >= prod.stok) return alert("Menu gagal ditambahkan, stok habis.");
 
             if (ada) { ada.qty++; } else { keranjang.push({ ...prod, qty: 1 }); }
             updateKeranjang();
@@ -238,7 +270,7 @@
             const prod = produk.find(p => p.id === id);
             if (!item) return;
 
-            if (jumlah > 0 && item.qty >= prod.stok) return alert("Stok di raka/gudang tidak mencukupi!");
+            if (jumlah > 0 && item.qty >= prod.stok) return alert("Gagal menambah, kuota batas atas stok tercapai.");
 
             item.qty += jumlah;
             if (item.qty <= 0) { keranjang = keranjang.filter(i => i.id !== id); }
@@ -248,6 +280,8 @@
         function kosongkanKeranjang() { 
             keranjang = []; notaIdAktif = null; 
             document.getElementById('label-nota-qr').classList.add('hidden');
+            document.getElementById('customer-name').value = '';
+            document.getElementById('table-number').value = '';
             updateKeranjang(); 
         }
 
@@ -256,7 +290,7 @@
             document.getElementById('cart-count').innerText = keranjang.reduce((sum, i) => sum + i.qty, 0);
 
             if (keranjang.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-400 py-6"><p class="text-xs font-medium">Keranjang kosong</p></div>`;
+                container.innerHTML = `<div class="text-center text-slate-500 py-12"><p class="text-xs">Billing Masih Kosong</p></div>`;
                 document.getElementById('subtotal').innerText = "Rp 0";
                 document.getElementById('total-harga').innerText = "Rp 0";
                 return;
@@ -264,15 +298,16 @@
 
             container.innerHTML = '';
             
-            // REVISI LOGIKA: Hitung total kuota gratis di awal secara mandiri
+            // LOGIKAR BARU ROMBAK BESAR-BESARAN: 1 ROTI (ORIGINAL/PANDAN) = GRATIS 1 TOPPING
             let kuotaToppingGratis = 0;
             keranjang.forEach(item => {
-                if (item.kategori === 'original' || item.kategori === 'pandan') { kuotaToppingGratis += item.qty; }
+                if (item.kategori === 'original' || item.kategori === 'pandan') { 
+                    kuotaToppingGratis += item.qty; 
+                }
             });
 
             let total = 0;
 
-            // Render list item keranjang belanja kasir
             keranjang.forEach(item => {
                 let sub = 0;
                 let infoTopping = '';
@@ -285,10 +320,10 @@
                         if (kuotaToppingGratis >= qtyToppingIni) {
                             kuotaToppingGratis -= qtyToppingIni;
                             qtyBayar = 0;
-                            infoTopping = `<span class="text-[9px] bg-green-100 text-green-700 px-1 rounded font-bold">Promo Gratis</span>`;
+                            infoTopping = `<span class="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded font-bold ml-1">Gratis (Promo 1:1)</span>`;
                         } else {
                             qtyBayar = qtyToppingIni - kuotaToppingGratis;
-                            infoTopping = `<span class="text-[9px] bg-green-100 text-green-700 px-1 rounded font-bold">Promo ${kuotaToppingGratis} Pcs</span>`;
+                            infoTopping = `<span class="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded font-bold ml-1">Potong ${kuotaToppingGratis} Pcs</span>`;
                             kuotaToppingGratis = 0;
                         }
                     } else {
@@ -302,17 +337,17 @@
                 total += sub;
 
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs animate-pop">
+                    <div class="flex justify-between items-center bg-[#151e33] p-2.5 rounded-xl border border-slate-800/80 text-xs animate-pop">
                         <div class="w-7/12 truncate">
-                            <p class="font-bold text-slate-800 truncate">${item.nama} ${infoTopping}</p>
-                            <p class="text-[10px] text-slate-400">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</p>
+                            <p class="font-bold text-slate-200 truncate flex items-center">${item.nama} ${infoTopping}</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</p>
                         </div>
-                        <div class="w-5/12 flex items-center justify-end gap-1.5">
-                            <span class="font-extrabold text-[11px] text-slate-800">Rp ${sub.toLocaleString('id-ID')}</span>
-                            <div class="flex border border-slate-300 rounded bg-white overflow-hidden shadow-2xs">
-                                <button onclick="ubahQty(${item.id}, -1)" class="px-1.5 py-0.5 bg-slate-50 text-xs font-black transition-colors duration-150 active:bg-slate-200">-</button>
-                                <span class="px-1 py-0.5 text-xs font-bold">${item.qty}</span>
-                                <button onclick="ubahQty(${item.id}, 1)" class="px-1.5 py-0.5 bg-slate-50 text-xs font-black transition-colors duration-150 active:bg-slate-200">+</button>
+                        <div class="w-5/12 flex items-center justify-end gap-2">
+                            <span class="font-bold text-slate-200 font-mono">Rp ${sub.toLocaleString('id-ID')}</span>
+                            <div class="flex border border-slate-700 bg-[#1b253e] rounded-lg overflow-hidden shadow-sm">
+                                <button onclick="ubahQty(${item.id}, -1)" class="px-2 py-0.5 bg-slate-800 text-slate-300 font-black active:bg-slate-700">-</button>
+                                <span class="px-1.5 py-0.5 font-bold text-slate-200">${item.qty}</span>
+                                <button onclick="ubahQty(${item.id}, 1)" class="px-2 py-0.5 bg-slate-800 text-slate-300 font-black active:bg-slate-700">+</button>
                             </div>
                         </div>
                     </div>`;
@@ -325,14 +360,31 @@
             hitungKembalian();
         }
 
+        function pilihMetode(m) {
+            metodePembayaran = m;
+            const btnTunai = document.getElementById('pay-tunai');
+            const btnQris = document.getElementById('pay-qris');
+            if (m === 'TUNAI') {
+                btnTunai.className = "py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-amber-500 text-slate-950 border-amber-500";
+                btnQris.className = "py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-transparent text-slate-400 border-slate-700 hover:border-slate-600";
+                document.getElementById('cash-input-section').classList.remove('opacity-40');
+            } else {
+                btnQris.className = "py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-amber-500 text-slate-950 border-amber-500";
+                btnTunai.className = "py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-transparent text-slate-400 border-slate-700 hover:border-slate-600";
+                document.getElementById('cash-input-section').classList.add('opacity-40');
+            }
+            hitungKembalian();
+        }
+
         function hitungKembalian() {
             const total = parseInt(document.getElementById('total-harga').innerText.replace(/[^0-9]/g, '')) || 0;
             const cash = parseInt(document.getElementById('cash-amount').value) || 0;
             const change = cash - total;
             const changeEl = document.getElementById('change-amount');
-            if (metodePembayaran === 'QRIS' || cash === 0) { changeEl.innerText = "Rp 0"; changeEl.className = "text-sm font-black text-slate-400"; } 
-            else if (change >= 0) { changeEl.innerText = `Rp ${change.toLocaleString('id-ID')}`; changeEl.className = "text-sm font-black text-green-600"; } 
-            else { changeEl.innerText = "Uang Kurang"; changeEl.className = "text-sm font-black text-red-500 animate-pulse"; }
+            if (metodePembayaran === 'QRIS') { changeEl.innerText = "Rp 0"; changeEl.className = "text-xs font-bold text-slate-400 font-mono"; } 
+            else if (cash === 0) { changeEl.innerText = "Rp 0"; changeEl.className = "text-xs font-bold text-slate-400 font-mono"; }
+            else if (change >= 0) { changeEl.innerText = `Rp ${change.toLocaleString('id-ID')}`; changeEl.className = "text-xs font-black text-emerald-400 font-mono"; } 
+            else { changeEl.innerText = "Uang Pembayaran Kurang"; changeEl.className = "text-xs font-bold text-rose-400 animate-pulse"; }
         }
 
         function bukaModalAntrean() { document.getElementById('modal-antrean').classList.remove('hidden'); muatAntreanTampilan(); }
@@ -340,16 +392,19 @@
 
         function muatAntreanTampilan() {
             const container = document.getElementById('list-antrean-container');
-            if (listAntreanAktif.length === 0) { container.innerHTML = '<p class="text-center text-xs text-green-600 font-bold py-6">🎉 Tidak ada antrean QR</p>'; return; }
+            if (listAntreanAktif.length === 0) { container.innerHTML = '<p class="text-center text-xs text-emerald-400 font-bold py-6">🎉 Antrean Meja Bersih</p>'; return; }
             container.innerHTML = '';
             listAntreanAktif.forEach((ant, index) => {
                 container.innerHTML += `
-                    <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200 text-xs flex flex-col gap-2">
-                        <div class="flex justify-between items-center font-bold"><span class="text-amber-950 font-mono">${ant.id}</span></div>
-                        <p class="text-slate-600">${ant.items}</p>
-                        <div class="flex justify-between items-center pt-1 border-t border-dashed border-amber-200">
-                            <span class="font-black">Total: Rp ${ant.total.toLocaleString('id-ID')}</span>
-                            <button onclick="prosesAntreanQR(${index})" class="bg-amber-800 text-white font-bold px-2.5 py-1 rounded-md text-[11px]">Muat ke Kasir</button>
+                    <div class="bg-[#162035] p-3 rounded-xl border border-slate-800 text-xs flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center font-bold">
+                            <span class="text-amber-400 font-mono">${ant.id}</span>
+                            <span class="text-slate-400 text-[11px]">${ant.pelanggan} (${ant.meja})</span>
+                        </div>
+                        <p class="text-slate-300 font-mono text-[11px]">${ant.items}</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-dashed border-slate-700 mt-1">
+                            <span class="font-black text-slate-100">Bill: Rp ${ant.total.toLocaleString('id-ID')}</span>
+                            <button onclick="prosesAntreanQR(${index})" class="bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-md text-[11px] cursor-pointer">Inject ke Kasir</button>
                         </div>
                     </div>`;
             });
@@ -359,6 +414,10 @@
             const antrean = listAntreanAktif[index];
             notaIdAktif = antrean.id;
             keranjang = [];
+            
+            document.getElementById('customer-name').value = antrean.pelanggan;
+            document.getElementById('table-number').value = antrean.meja;
+
             antrean.items.split(', ').forEach(str => {
                 let match = str.match(/(.+) \[x(\d+)\]/);
                 if (match) {
@@ -371,21 +430,27 @@
             updateKeranjang(); tutupModalAntrean();
         }
 
-        function prosesTransaksi() {
+        function prosesTransaksi(tipeMode) {
             if (keranjang.length === 0) return;
             const total = parseInt(document.getElementById('total-harga').innerText.replace(/[^0-9]/g, ''));
             let cash = metodePembayaran === 'QRIS' ? total : (parseInt(document.getElementById('cash-amount').value) || 0);
-            if (metodePembayaran === 'TUNAI' && cash < total) return alert("Uang kurang!");
+            if (metodePembayaran === 'TUNAI' && cash < total) return alert("Gagal memproses, nominal cash kurang.");
+
+            const nameInput = document.getElementById('customer-name').value.trim() || 'Umum';
+            const tableInput = document.getElementById('table-number').value.trim() || '-';
 
             const finalNotaId = notaIdAktif ? notaIdAktif : 'TRX-' + Math.floor(100000 + Math.random() * 900000);
             const waktuSkrg = new Date().toLocaleString('id-ID');
 
             document.getElementById('struk-id').innerText = finalNotaId;
+            document.getElementById('struk-cust').innerText = nameInput;
+            document.getElementById('struk-table').innerText = tableInput;
             document.getElementById('struk-date').innerText = waktuSkrg;
             document.getElementById('struk-method').innerText = metodePembayaran;
             
             let itemsHtml = '';
             let ringkasanItem = [];
+            let textWaItems = '';
 
             let kuotaToppingStruk = 0;
             keranjang.forEach(item => {
@@ -407,6 +472,7 @@
 
                 itemsHtml += `<table style="width: 100%; font-size: 11px; color:#000;"><tr><td style="width: 65%; text-align: left;">${item.nama}</td><td style="width: 10%; text-align: center;">x${item.qty}</td><td style="width: 25%; text-align: right;">${sub.toLocaleString('id-ID')}</td></tr></table>`;
                 ringkasanItem.push(`${item.nama} [x${item.qty}]`);
+                textWaItems += `• ${item.nama} (x${item.qty}) -> Rp ${sub.toLocaleString('id-ID')}\n`;
             });
             
             document.getElementById('struk-items').innerHTML = itemsHtml;
@@ -414,13 +480,38 @@
             document.getElementById('struk-cash').innerText = `Rp ${cash.toLocaleString('id-ID')}`;
             document.getElementById('struk-change').innerText = `Rp ${(cash - total).toLocaleString('id-ID')}`;
 
+            // PUSH DATA KE DATABASE EXCEL LIVE
             if (notaIdAktif) {
                 fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "update_status", id: finalNotaId, metode: metodePembayaran }) });
             } else {
-                fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: finalNotaId, tanggal: waktuSkrg, items: ringkasanItem.join(', '), total: total, metode: metodePembayaran, cartData: keranjang, status: "SELESAI" }) });
+                fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: finalNotaId, tanggal: waktuSkrg, pelanggan: nameInput, meja: tableInput, items: ringkasanItem.join(', '), total: total, metode: metodePembayaran, cartData: keranjang, status: "SELESAI" }) });
             }
             
-            setTimeout(() => { window.print(); kosongkanKeranjang(); tarikDataCloud(); }, 300);
+            // CEK REDIRECT MODE
+            if (tipeMode === 'print') {
+                setTimeout(() => { window.print(); kosongkanKeranjang(); tarikDataCloud(); }, 300);
+            } else if (tipeMode === 'wa') {
+                // FORMAT DIGITAL TEXT WHATSAPP MESSENGER AESTHETIC
+                let waText = `*🧾 NOTA DIGITAL ROTI KADET PREMIUM*\n`;
+                waText += `-------------------------------------------\n`;
+                waText += `*ID Nota* : ${finalNotaId}\n`;
+                waText += `*Pelanggan* : ${nameInput}\n`;
+                waText += `*No Meja* : ${tableInput}\n`;
+                waText += `*Waktu* : ${waktuSkrg}\n`;
+                waText += `*Metode* : ${metodePembayaran}\n`;
+                waText += `-------------------------------------------\n`;
+                waText += `${textWaItems}`;
+                waText += `-------------------------------------------\n`;
+                waText += `*TOTAL NETTO : Rp ${total.toLocaleString('id-ID')}*\n`;
+                waText += `*DIBAYAR : Rp ${cash.toLocaleString('id-ID')}*\n`;
+                waText += `*KEMBALIAN : Rp ${(cash - total).toLocaleString('id-ID')}*\n\n`;
+                waText += ` Terima Kasih, Selamat Menikmati Hidangan Segar Kami!`;
+                
+                let encodedText = encodeURIComponent(waText);
+                window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+                kosongkanKeranjang(); 
+                tarikDataCloud();
+            }
         }
 
         function bukaModalMenu() {
@@ -428,11 +519,10 @@
             const container = document.getElementById('edit-prices-list');
             container.innerHTML = '';
             produk.forEach(p => {
-                container.innerHTML += `<div class="flex justify-between p-2 border rounded bg-slate-50 text-xs"><span>${p.nama}</span><span class="font-bold text-amber-900">Stok Gudang: ${p.stok}</span></div>`;
+                container.innerHTML += `<div class="flex justify-between p-3 border border-slate-800 rounded-xl bg-[#141b2e] text-xs"><span>${p.nama}</span><span class="font-bold text-amber-400">Stok Live Gudang: ${p.stok} Pcs</span></div>`;
             });
         }
         function tutupModalMenu() { document.getElementById('modal-menu').classList.add('hidden'); }
     </script>
 </body>
 </html>
-
