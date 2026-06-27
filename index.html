@@ -23,8 +23,10 @@
 <body class="text-slate-100 min-h-screen overflow-x-hidden">
 
     <div class="flex flex-col lg:flex-row min-h-screen w-full">
+        <!-- SISI KIRI: PANEL PRODUK & LIVE OMZET -->
         <div class="w-full lg:w-2/3 p-4 lg:p-6 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800/80 bg-[#0e1424]">
             <div>
+                <!-- HEADER UTAMA -->
                 <header class="mb-5 flex flex-col sm:flex-row gap-3 justify-between sm:items-center bg-[#151f32] p-4 rounded-2xl border border-slate-800 shadow-xl">
                     <div>
                         <h1 class="text-xl lg:text-2xl font-extrabold text-amber-400 tracking-tight flex items-center gap-2">
@@ -34,7 +36,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="bukaModalAntrean()" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-bold shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-1.5">
-                            📥 Antrean QR <span id="badge-antrean" class="bg-slate-950 text-amber-400 rounded-full px-1.5 py-0.5 text-[10px] font-black hidden">0</span>
+                            📥 Antrean QR <span id="badge-antrean" class="bg-white text-amber-400 rounded-full px-1.5 py-0.5 text-[10px] font-black hidden">0</span>
                         </button>
                         <button onclick="bukaModalMenu()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition-all border border-slate-700 cursor-pointer">
                             ⚙️ Cek Stok
@@ -42,6 +44,7 @@
                     </div>
                 </header>
 
+                <!-- FILTER KATEGORI -->
                 <div class="flex gap-2 mb-5 bg-[#151f32] p-1.5 rounded-xl self-start max-w-full overflow-x-auto whitespace-nowrap border border-slate-800/60">
                     <button onclick="filterKategori('all')" id="btn-all" class="category-btn px-4 py-1.5 bg-amber-500 text-slate-950 rounded-lg font-bold text-xs shadow-md transition-all cursor-pointer">Semua Menu</button>
                     <button onclick="filterKategori('original')" id="btn-original" class="category-btn px-4 py-1.5 text-slate-400 rounded-lg font-semibold text-xs hover:text-slate-200 transition-all cursor-pointer">Original Varian</button>
@@ -49,29 +52,40 @@
                     <button onclick="filterKategori('toping')" id="btn-toping" class="category-btn px-4 py-1.5 text-slate-400 rounded-lg font-semibold text-xs hover:text-slate-200 transition-all cursor-pointer">Premium Topping</button>
                 </div>
 
+                <!-- PRODUCT GRID -->
                 <div id="loading-produk" class="text-center py-16 text-xs font-bold text-slate-500 animate-pulse">Menghubungkan enkripsi database Google Cloud...</div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 pb-6 hidden" id="product-grid"></div>
             </div>
 
-            <div class="bg-[#111a2e] border border-slate-800 p-4 rounded-2xl grid grid-cols-2 gap-4 shadow-inner mt-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xl">💰</div>
-                    <div>
-                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Omzet Live Hari Ini</p>
-                        <h4 id="summary-omzet" class="text-base lg:text-lg font-black text-emerald-400">Rp 0</h4>
+            <!-- DASHBOARD LIVE SUMMARY OMZET & TOMBOL RESET -->
+            <div class="bg-[#111a2e] border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between gap-4 shadow-inner mt-4">
+                <div class="grid grid-cols-2 gap-4 flex-1">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xl">💰</div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Omzet Live Hari Ini</p>
+                            <h4 id="summary-omzet" class="text-base lg:text-lg font-black text-emerald-400">Rp 0</h4>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 border-l border-slate-800/80 pl-4">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-xl">📄</div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Nota Berhasil</p>
+                            <h4 id="summary-nota" class="text-base lg:text-lg font-black text-blue-400">0 Invoice</h4>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 border-l border-slate-800 pl-4">
-                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-xl">📄</div>
-                    <div>
-                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Nota Berhasil</p>
-                        <h4 id="summary-nota" class="text-base lg:text-lg font-black text-blue-400">0 Invoice</h4>
-                    </div>
+                <div class="flex items-center border-t sm:border-t-0 sm:border-l border-slate-800 pt-3 sm:pt-0 sm:pl-4">
+                    <button onclick="resetAntreanHarian()" class="w-full sm:w-auto px-3 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-[11px] font-bold transition-all cursor-pointer">
+                        🔄 Reset Urutan Antrean
+                    </button>
                 </div>
             </div>
         </div>
 
+        <!-- SISI KANAN: MANAGEMENT KERANJANG & BILLING -->
         <div class="w-full lg:w-1/3 bg-[#111726] flex flex-col shadow-2xl lg:h-screen lg:sticky lg:top-0 border-l border-slate-800/60">
+            <!-- HEADER DATA PELANGGAN -->
             <div class="p-4 border-b border-slate-800 bg-[#141c30] space-y-3 shrink-0">
                 <div class="flex justify-between items-center">
                     <h2 class="font-extrabold text-slate-200 flex items-center gap-2 text-xs uppercase tracking-wider">
@@ -80,20 +94,23 @@
                     <button onclick="kosongkanKeranjang()" class="text-xs text-rose-400 hover:text-rose-300 font-bold transition-colors cursor-pointer">Reset Bill</button>
                 </div>
                 
+                <!-- INPUT DATA RESTORAN -->
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="text-[9px] uppercase font-bold text-slate-400 tracking-wide block mb-1">Nama Pelanggan</label>
-                        <input type="text" id="customer-name" class="w-full bg-[#1c263f] border border-slate-700/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 placeholder-slate-500" placeholder="Ex: Ananda">
+                        <input type="text" id="customer-name" class="w-full bg-[#1c263f] border border-slate-700/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 placeholder-slate-500" placeholder="Nama Pembeli">
                     </div>
                     <div>
-                        <label class="text-[9px] uppercase font-bold text-slate-400 tracking-wide block mb-1">No Meja / Jenis</label>
-                        <input type="text" id="table-number" class="w-full bg-[#1c263f] border border-slate-700/60 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 placeholder-slate-500" placeholder="Ex: Meja 04 / Takeaway">
+                        <label class="text-[9px] uppercase font-bold text-amber-400 tracking-wide block mb-1">No. Antrean Live</label>
+                        <input type="text" id="queue-number" class="w-full bg-[#251f15] border border-amber-500/30 rounded-lg px-2.5 py-1.5 text-xs text-amber-400 font-black focus:outline-none font-mono" readonly value="Loading...">
                     </div>
                 </div>
             </div>
 
+            <!-- CART ITEMS LIST CONTAINER -->
             <div class="p-3 space-y-2 lg:overflow-y-auto lg:flex-1" id="cart-items"></div>
 
+            <!-- TOTAL BILLING & PAYMENT SECTION -->
             <div class="p-4 border-t border-slate-800 bg-[#131b2e] space-y-3 mt-auto shadow-inner pb-8 lg:pb-4">
                 <div class="space-y-1">
                     <div class="flex justify-between text-xs text-slate-400">
@@ -106,11 +123,13 @@
                     </div>
                 </div>
 
+                <!-- METODE BAYAR -->
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="pilihMetode('TUNAI')" id="pay-tunai" class="py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-amber-500 text-slate-950 border-amber-500">💵 CASH / TUNAI</button>
                     <button onclick="pilihMetode('QRIS')" id="pay-qris" class="py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer bg-transparent text-slate-400 border-slate-700 hover:border-slate-600">📱 DIGITAL QRIS</button>
                 </div>
 
+                <!-- CASH CALCULATION -->
                 <div class="grid grid-cols-3 gap-2 items-center bg-[#192239] p-2 rounded-xl border border-slate-800" id="cash-input-section">
                     <label class="text-[10px] font-bold text-slate-300 col-span-1">TUNAI TERIMA</label>
                     <div class="relative col-span-2">
@@ -124,6 +143,7 @@
                     <span id="change-amount" class="text-xs font-black text-slate-400 font-mono">Rp 0</span>
                 </div>
 
+                <!-- ACTIONS BUTTON -->
                 <div class="flex gap-2">
                     <button onclick="prosesTransaksi('print')" class="w-2/3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold py-3 rounded-xl shadow-lg transition-all text-xs tracking-wider cursor-pointer">
                         🖨️ KUNCI & CETAK STRUK
@@ -136,10 +156,11 @@
         </div>
     </div>
 
+    <!-- MODAL ANTREAN QR -->
     <div id="modal-antrean" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
         <div class="bg-[#111726] border border-slate-800 rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[80vh]">
             <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#141c30] rounded-t-2xl">
-                <h3 class="font-bold text-amber-400 flex items-center gap-1.5 text-sm">📥 Antrean Pelanggan via QR Meja</h3>
+                <h3 class="font-bold text-amber-400 flex items-center gap-1.5 text-sm">📥 Antrean Pelanggan via QR</h3>
                 <button onclick="tutupModalAntrean()" class="text-slate-400 hover:text-slate-200 font-bold text-lg cursor-pointer">&times;</button>
             </div>
             <div class="p-4 overflow-y-auto space-y-3 flex-1" id="list-antrean-container"></div>
@@ -150,6 +171,7 @@
         </div>
     </div>
 
+    <!-- MODAL PENGECEKAN STOK -->
     <div id="modal-menu" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-pop">
         <div class="bg-[#111726] border border-slate-800 rounded-2xl w-full max-w-xl shadow-2xl flex flex-col max-h-[85vh]">
             <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#141c30] rounded-t-2xl">
@@ -160,6 +182,7 @@
         </div>
     </div>
 
+    <!-- STRUK AREA PRINT -->
     <div id="struk-print" style="display:none; width: 100%; max-width: 260px; font-family: monospace; color: #000; font-size: 11px;">
         <div style="text-align: center; margin-bottom: 8px;">
             <strong style="font-size: 14px; text-transform: uppercase;">ROTI KADET PREMIUM</strong><br>
@@ -169,7 +192,7 @@
         <table style="width: 100%; font-size: 11px; color: #000; border-collapse: collapse;">
             <tr><td>Nota ID</td><td>:</td><td id="struk-id" style="font-weight:bold;">-</td></tr>
             <tr><td>Pelanggan</td><td>:</td><td id="struk-cust">-</td></tr>
-            <tr><td>No Meja</td><td>:</td><td id="struk-table" style="font-weight:bold;">-</td></tr>
+            <tr><td>No. Antrean</td><td>:</td><td id="struk-table" style="font-weight:bold;">-</td></tr>
             <tr><td>Waktu</td><td>:</td><td id="struk-date">-</td></tr>
             <tr><td>Metode</td><td>:</td><td id="struk-method">-</td></tr>
         </table>
@@ -194,8 +217,9 @@
         let metodePembayaran = 'TUNAI'; 
         let notaIdAktif = null;
         let listAntreanAktif = [];
+        let currentLiveAntreanNum = 1;
 
-        setInterval(tarikDataCloud, 20000);
+        setInterval(tarikDataCloud, 12000);
         tarikDataCloud();
 
         function tarikDataCloud() {
@@ -204,7 +228,12 @@
                 .then(data => {
                     produk = data.produk;
                     listAntreanAktif = data.antrean;
+                    currentLiveAntreanNum = data.nextAntrean;
                     
+                    if(!notaIdAktif) {
+                        document.getElementById('queue-number').value = "Antrean #" + currentLiveAntreanNum;
+                    }
+
                     document.getElementById('summary-omzet').innerText = `Rp ${data.ringkasan.omzet.toLocaleString('id-ID')}`;
                     document.getElementById('summary-nota').innerText = `${data.ringkasan.notaCount} Invoice`;
 
@@ -225,7 +254,6 @@
             grid.innerHTML = '';
             produk.forEach(p => {
                 if (kategoriAktif !== 'all' && p.kategori !== kategoriAktif) return;
-                
                 let labelColor = p.stok <= 5 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20 px-1.5 py-0.5 rounded text-[10px]' : 'text-slate-400 text-[11px]';
                 let cardDisable = p.stok <= 0 ? 'opacity-30 pointer-events-none' : '';
 
@@ -257,7 +285,6 @@
         function tambahKeKeranjang(id) {
             const prod = produk.find(p => p.id === id);
             const ada = keranjang.find(item => item.id === id);
-            
             let qtySekarang = ada ? ada.qty : 0;
             if (qtySekarang >= prod.stok) return alert("Menu gagal ditambahkan, stok habis.");
 
@@ -281,7 +308,7 @@
             keranjang = []; notaIdAktif = null; 
             document.getElementById('label-nota-qr').classList.add('hidden');
             document.getElementById('customer-name').value = '';
-            document.getElementById('table-number').value = '';
+            document.getElementById('queue-number').value = "Antrean #" + currentLiveAntreanNum;
             updateKeranjang(); 
         }
 
@@ -297,17 +324,12 @@
             }
 
             container.innerHTML = '';
-            
-            // LOGIKAR BARU ROMBAK BESAR-BESARAN: 1 ROTI (ORIGINAL/PANDAN) = GRATIS 1 TOPPING
             let kuotaToppingGratis = 0;
             keranjang.forEach(item => {
-                if (item.kategori === 'original' || item.kategori === 'pandan') { 
-                    kuotaToppingGratis += item.qty; 
-                }
+                if (item.kategori === 'original' || item.kategori === 'pandan') { kuotaToppingGratis += item.qty; }
             });
 
             let total = 0;
-
             keranjang.forEach(item => {
                 let sub = 0;
                 let infoTopping = '';
@@ -326,13 +348,9 @@
                             infoTopping = `<span class="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded font-bold ml-1">Potong ${kuotaToppingGratis} Pcs</span>`;
                             kuotaToppingGratis = 0;
                         }
-                    } else {
-                        qtyBayar = qtyToppingIni;
-                    }
+                    } else { qtyBayar = qtyToppingIni; }
                     sub = item.harga * qtyBayar;
-                } else {
-                    sub = item.harga * item.qty;
-                }
+                } else { sub = item.harga * item.qty; }
 
                 total += sub;
 
@@ -381,8 +399,7 @@
             const cash = parseInt(document.getElementById('cash-amount').value) || 0;
             const change = cash - total;
             const changeEl = document.getElementById('change-amount');
-            if (metodePembayaran === 'QRIS') { changeEl.innerText = "Rp 0"; changeEl.className = "text-xs font-bold text-slate-400 font-mono"; } 
-            else if (cash === 0) { changeEl.innerText = "Rp 0"; changeEl.className = "text-xs font-bold text-slate-400 font-mono"; }
+            if (metodePembayaran === 'QRIS' || cash === 0) { changeEl.innerText = "Rp 0"; changeEl.className = "text-xs font-bold text-slate-400 font-mono"; } 
             else if (change >= 0) { changeEl.innerText = `Rp ${change.toLocaleString('id-ID')}`; changeEl.className = "text-xs font-black text-emerald-400 font-mono"; } 
             else { changeEl.innerText = "Uang Pembayaran Kurang"; changeEl.className = "text-xs font-bold text-rose-400 animate-pulse"; }
         }
@@ -392,14 +409,14 @@
 
         function muatAntreanTampilan() {
             const container = document.getElementById('list-antrean-container');
-            if (listAntreanAktif.length === 0) { container.innerHTML = '<p class="text-center text-xs text-emerald-400 font-bold py-6">🎉 Antrean Meja Bersih</p>'; return; }
+            if (listAntreanAktif.length === 0) { container.innerHTML = '<p class="text-center text-xs text-emerald-400 font-bold py-6">🎉 Antrean Hari Ini Bersih</p>'; return; }
             container.innerHTML = '';
             listAntreanAktif.forEach((ant, index) => {
                 container.innerHTML += `
                     <div class="bg-[#162035] p-3 rounded-xl border border-slate-800 text-xs flex flex-col gap-1.5">
                         <div class="flex justify-between items-center font-bold">
                             <span class="text-amber-400 font-mono">${ant.id}</span>
-                            <span class="text-slate-400 text-[11px]">${ant.pelanggan} (${ant.meja})</span>
+                            <span class="text-slate-400 text-[11px]">${ant.pelanggan} (Antrean #${ant.antreanNum})</span>
                         </div>
                         <p class="text-slate-300 font-mono text-[11px]">${ant.items}</p>
                         <div class="flex justify-between items-center pt-2 border-t border-dashed border-slate-700 mt-1">
@@ -416,7 +433,7 @@
             keranjang = [];
             
             document.getElementById('customer-name').value = antrean.pelanggan;
-            document.getElementById('table-number').value = antrean.meja;
+            document.getElementById('queue-number').value = "Antrean #" + antrean.antreanNum;
 
             antrean.items.split(', ').forEach(str => {
                 let match = str.match(/(.+) \[x(\d+)\]/);
@@ -430,6 +447,14 @@
             updateKeranjang(); tutupModalAntrean();
         }
 
+        function resetAntreanHarian() {
+            if(confirm("Apakah Anda yakin ingin me-reset urutan antrean harian secara manual?")) {
+                fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "reset_antrean_manual" }) });
+                alert("Sistem antrean dibersihkan. Refresh halaman browser Anda.");
+                location.reload();
+            }
+        }
+
         function prosesTransaksi(tipeMode) {
             if (keranjang.length === 0) return;
             const total = parseInt(document.getElementById('total-harga').innerText.replace(/[^0-9]/g, ''));
@@ -437,14 +462,14 @@
             if (metodePembayaran === 'TUNAI' && cash < total) return alert("Gagal memproses, nominal cash kurang.");
 
             const nameInput = document.getElementById('customer-name').value.trim() || 'Umum';
-            const tableInput = document.getElementById('table-number').value.trim() || '-';
+            const finalAntreanNum = document.getElementById('queue-number').value.replace(/[^0-9]/g, '') || currentLiveAntreanNum;
 
             const finalNotaId = notaIdAktif ? notaIdAktif : 'TRX-' + Math.floor(100000 + Math.random() * 900000);
             const waktuSkrg = new Date().toLocaleString('id-ID');
 
             document.getElementById('struk-id').innerText = finalNotaId;
             document.getElementById('struk-cust').innerText = nameInput;
-            document.getElementById('struk-table').innerText = tableInput;
+            document.getElementById('struk-table').innerText = "Antrean #" + finalAntreanNum;
             document.getElementById('struk-date').innerText = waktuSkrg;
             document.getElementById('struk-method').innerText = metodePembayaran;
             
@@ -466,9 +491,7 @@
                         else { qtyBayar = item.qty - kuotaToppingStruk; kuotaToppingStruk = 0; }
                     } else { qtyBayar = item.qty; }
                     sub = item.harga * qtyBayar;
-                } else {
-                    sub = item.harga * item.qty;
-                }
+                } else { sub = item.harga * item.qty; }
 
                 itemsHtml += `<table style="width: 100%; font-size: 11px; color:#000;"><tr><td style="width: 65%; text-align: left;">${item.nama}</td><td style="width: 10%; text-align: center;">x${item.qty}</td><td style="width: 25%; text-align: right;">${sub.toLocaleString('id-ID')}</td></tr></table>`;
                 ringkasanItem.push(`${item.nama} [x${item.qty}]`);
@@ -480,37 +503,32 @@
             document.getElementById('struk-cash').innerText = `Rp ${cash.toLocaleString('id-ID')}`;
             document.getElementById('struk-change').innerText = `Rp ${(cash - total).toLocaleString('id-ID')}`;
 
-            // PUSH DATA KE DATABASE EXCEL LIVE
             if (notaIdAktif) {
                 fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "update_status", id: finalNotaId, metode: metodePembayaran }) });
             } else {
-                fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: finalNotaId, tanggal: waktuSkrg, pelanggan: nameInput, meja: tableInput, items: ringkasanItem.join(', '), total: total, metode: metodePembayaran, cartData: keranjang, status: "SELESAI" }) });
+                fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: finalNotaId, tanggal: waktuSkrg, pelanggan: nameInput, antreanNum: finalAntreanNum, items: ringkasanItem.join(', '), total: total, metode: metodePembayaran, cartData: keranjang, status: "SELESAI" }) });
             }
             
-            // CEK REDIRECT MODE
             if (tipeMode === 'print') {
                 setTimeout(() => { window.print(); kosongkanKeranjang(); tarikDataCloud(); }, 300);
             } else if (tipeMode === 'wa') {
-                // FORMAT DIGITAL TEXT WHATSAPP MESSENGER AESTHETIC
                 let waText = `*🧾 NOTA DIGITAL ROTI KADET PREMIUM*\n`;
                 waText += `-------------------------------------------\n`;
-                waText += `*ID Nota* : ${finalNotaId}\n`;
-                waText += `*Pelanggan* : ${nameInput}\n`;
-                waText += `*No Meja* : ${tableInput}\n`;
-                waText += `*Waktu* : ${waktuSkrg}\n`;
-                waText += `*Metode* : ${metodePembayaran}\n`;
+                waText += `*ID Nota*    : ${finalNotaId}\n`;
+                waText += `*Pelanggan*  : ${nameInput}\n`;
+                waText += `*No. Antrean* : No. ${finalAntreanNum}\n`;
+                waText += `*Waktu*      : ${waktuSkrg}\n`;
+                waText += `*Metode*     : ${metodePembayaran}\n`;
                 waText += `-------------------------------------------\n`;
                 waText += `${textWaItems}`;
                 waText += `-------------------------------------------\n`;
                 waText += `*TOTAL NETTO : Rp ${total.toLocaleString('id-ID')}*\n`;
-                waText += `*DIBAYAR : Rp ${cash.toLocaleString('id-ID')}*\n`;
-                waText += `*KEMBALIAN : Rp ${(cash - total).toLocaleString('id-ID')}*\n\n`;
+                waText += `*DIBAYAR     : Rp ${cash.toLocaleString('id-ID')}*\n`;
+                waText += `*KEMBALIAN   : Rp ${(cash - total).toLocaleString('id-ID')}*\n\n`;
                 waText += ` Terima Kasih, Selamat Menikmati Hidangan Segar Kami!`;
                 
-                let encodedText = encodeURIComponent(waText);
-                window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
-                kosongkanKeranjang(); 
-                tarikDataCloud();
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(waText)}`, '_blank');
+                kosongkanKeranjang(); tarikDataCloud();
             }
         }
 
